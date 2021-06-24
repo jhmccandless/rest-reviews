@@ -11,11 +11,13 @@ const server = http.createServer(app);
 app.engine("html", es6Renderer);
 app.set("views", "views");
 app.set("view engine", "html");
+app.use(express.static("public"));
 
 const hostname = "127.0.0.1";
 const port = 3785;
-
 ///// app logic
+
+app.use(express.static(__dirname));
 
 app.get("/", (req, res) => {
   res.render("home");
