@@ -18,15 +18,26 @@ const hostname = "127.0.0.1";
 const port = 3785;
 
 app.use("/public", express.static("public"));
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/search/", async (req, res) => {
-  const info = await db.query("SELECT * FROM review");
-  res.render("search_results");
+app.get("/search", async (req, res) => {
+  const info = await db.query(
+    `SELECT * FROM restaurant WHERE name ILIKE '%a%'`
+  );
+  res.render("search_results", { locals: { info } });
+});
+
+app.post("/search", async (req, res) => {
+  const input = req.body;
+  console.log(input);
+  const info = await db.query(
+    `SELECT * FROM restaurant WHERE name ILIKE '%a%'`
+  );
+  res.render("search_results", { locals: { info } });
 });
 
 server.listen(port, hostname, () => {

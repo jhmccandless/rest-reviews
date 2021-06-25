@@ -7,6 +7,10 @@
     <title>Searching</title>
   </head>
   <body>
-    These are the results
+    <ul>
+      ${info.map((el) => `
+      <li>${el.name}</li>
+      `).join('')}
+    </ul>
   </body>
 </html>
