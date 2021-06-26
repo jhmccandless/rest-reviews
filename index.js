@@ -2,9 +2,8 @@
 
 const http = require("http");
 const express = require("express");
-const bodyParser = require("body-parser");
-// const { execPath } = require("process");
 const es6Renderer = require("express-es6-template-engine");
+const exp = require("constants");
 const pgp = require("pg-promise")({});
 const dbsettings = process.env.DATABASE_URL || { database: "jasonmccandless" };
 const db = pgp(dbsettings);
@@ -16,7 +15,7 @@ app.set("views", "templates");
 app.set("view engine", "html");
 
 app.use("/public", express.static("public"));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -24,12 +23,13 @@ app.get("/", (req, res) => {
 
 app.get("/search", async (req, res, next) => {
   let term = req.query.searchPhrase;
-  const results = await db.any(
-    `SELECT * FROM restaurant WHERE name ILIKE '%${term}%'`
-  );
-  if (results) {
+  try {
+    const results = await db.any(
+      `SELECT * FROM restaurant WHERE name ILIKE '%${term}%'`
+    );
     res.render("search_results", { locals: { results } });
-  } else {
+  } catch (err) {
+    next();
   }
 });
 
@@ -44,24 +44,24 @@ app.get("/restaurant/:id", async (req, res, next) => {
     LEFT JOIN reviewer 
     ON reviewer.id = review.reviewer_id
     WHERE review.restaurant_id = ${id}
-    ORDER BY reviewer.name`
+    ORDER BY review.id DESC`
   );
   res.render("restaurant", {
     locals: { restInfo, restReviews },
   });
 });
 
-app.post("/restaurant/:id", async (req, res, next) => {
-  console.log(req.body);
-  //   const reviewInfo = await
+app.post("/restaurant/:id", (req, res, next) => {
+  let reviewInfo = req.body;
+  let id = parseInt(req.params.id);
+  //   db.none(
+  //     `INSERT INTO review (title, review, stars, restaurant_id) VALUES ('${reviewInfo.reviewTitle}',  '${reviewInfo.review}', ${reviewInfo.reviewStars}, ${id})`
+  //   );
+
+  res.redirect(`/restaurant/${id}`);
 });
 
-const HOST = "127.0.0.1";
 const PORT = process.env.PORT || 3785;
-
-// server.listen(PORT, HOST, () => {
-//   console.log(`listening on ${HOST}: ${PORT}`);
-// });
 
 server.listen(PORT, () => {
   console.log(`listening on: ${PORT}`);
