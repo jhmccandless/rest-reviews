@@ -9,7 +9,7 @@
   <body>
     <ul>
       ${info.map((el) => `
-      <li>${el.name}</li>
+      <li><a href="/templates/restaurant/${el.id}">${el.name}</a></li>
       `).join('')}
     </ul>
   </body>
