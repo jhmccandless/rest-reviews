@@ -21,15 +21,19 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
+app.post("/restaurant/new", (req, res) => {
+  res.render("new-rest");
+});
+
 app.get("/search", async (req, res, next) => {
   let term = req.query.searchPhrase;
-  try {
-    const results = await db.any(
-      `SELECT * FROM restaurant WHERE name ILIKE '%${term}%'`
-    );
+  const results = await db.any(
+    `SELECT * FROM restaurant WHERE name ILIKE '%${term}%'`
+  );
+  if (results[0]) {
     res.render("search_results", { locals: { results } });
-  } catch (err) {
-    next();
+  } else {
+    res.redirect("/restaurant/new");
   }
 });
 
