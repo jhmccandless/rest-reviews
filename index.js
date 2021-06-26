@@ -59,6 +59,10 @@ app.post("/restaurant/:id", async (req, res, next) => {
 const HOST = "127.0.0.1";
 const PORT = process.env.PORT || 3785;
 
-server.listen(PORT, HOST, () => {
-  console.log(`listening on ${HOST}: ${PORT}`);
+// server.listen(PORT, HOST, () => {
+//   console.log(`listening on ${HOST}: ${PORT}`);
+// });
+
+server.listen(PORT, () => {
+  console.log(`listening on: ${PORT}`);
 });
