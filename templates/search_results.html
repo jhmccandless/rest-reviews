@@ -8,8 +8,8 @@
   </head>
   <body>
     <ul>
-      ${info.map((el) => `
-      <li><a href="/templates/restaurant/${el.id}">${el.name}</a></li>
+      ${results.map((el) => `
+      <li><a href="/restaurant/${el.id}">${el.name}</a></li>
       `).join('')}
     </ul>
   </body>

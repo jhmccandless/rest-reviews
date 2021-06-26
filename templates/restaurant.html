@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>${restInfo.name}</h1>
+    <a>Address: ${restInfo.address}</a></br>
+    <a>Category: ${restInfo.category}</a>
+  </br></br>
+    <div id="review-input">
+        <h1>New Review</h1>
+        <form>
+            <label id="reivew-title">Title:</label></br>
+            <input type="text" name="reivew-title"></br></br>
+            <label id="review-stars">Stars:</label></br>
+            <input type="number" min="0" max="5" name="review-stars"></br></br>
+            <label id="reivew">Your Thoughts:</label></br>
+            <textarea type="text" name="review"></textarea></br>
+        </form>
+    </div>
+    <div id="reviews">
+        <h1>Reviews</h1>
+        ${restReviews.map ((el) =>
+            `<h2>${el.title}</h2>
+            <a>${el.stars} Stars</a></br></br>
+            <a>${el.review}</a></br>
+            <a>--${el.name}</a></br>
+        </br>`
+        ).join('')}
+    </div>
+  </body>
+</html>

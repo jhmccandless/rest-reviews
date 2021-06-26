@@ -24,48 +24,33 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/search", async (req, res) => {
+app.get("/search", async (req, res, next) => {
   let term = req.query.searchPhrase;
-  const info = await db.any(
+  const results = await db.any(
     `SELECT * FROM restaurant WHERE name ILIKE '%${term}%'`
   );
-  res.render("search_results", { locals: { info } });
+  if (results) {
+    res.render("search_results", { locals: { results } });
+  } else {
+  }
 });
 
-app.get("/restraunt/:id", (req, res, next) => {
-  let id = req.params.id;
-  console.log(id);
-  db.any(
-    `
-      select
-        reviewer.name as reviewer_name,
-        review.title,
-        review.stars,
-        review.review
-      from
-        restaurant
-      inner join
-        review on review.restaurant_id = restaurant.id
-      inner join
-        reviewer on review.reviewer_id = reviewer.id
-      where restaurant.id = ${id}
-    `
-  )
-    .then(function (reviews) {
-      return [
-        reviews,
-        db.one(`
-            select name as restaurant_name, * from restaurant
-            where id = ${id}`),
-      ];
-    })
-    .spread(function (reviews, restaurant) {
-      resp.render("restaurant.hbs", {
-        restaurant: restaurant,
-        reviews: reviews,
-      });
-    })
-    .catch(next);
+app.get("/restaurant/:id", async (req, res, next) => {
+  let id = parseInt(req.params.id);
+  const restInfo = await db.one(
+    `SELECT name, address, category FROM restaurant WHERE id = ${id}`
+  );
+  const restReviews = await db.any(
+    `SELECT review.restaurant_id, review.title, review.stars, review.review, reviewer.name 
+	FROM review 
+    LEFT JOIN reviewer 
+    ON reviewer.id = review.reviewer_id
+    WHERE review.restaurant_id = ${id}
+    ORDER BY reviewer.name`
+  );
+  res.render("restaurant", {
+    locals: { restInfo, restReviews },
+  });
 });
 
 server.listen(port, hostname, () => {
