@@ -21,8 +21,30 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.post("/restaurant/new", (req, res) => {
+app.get("/restaurant/new", (req, res) => {
   res.render("new-rest");
+});
+
+app.post("/restaurant/new", (req, res) => {
+  let restInfo = req.body;
+  //   const newRestFull = db.none(
+  //     `INSERT INTO restaurant (name, address, category) VALUES ('${restInfo.newRestName}', '${restInfo.newRestAddress}', '${restInfo.newRestCat}')`
+  //   );
+  res.redirect(`/restaurant/new-submit`, {
+    locals: { newRestFull },
+  });
+});
+
+app.get("/restaurant/new-submit", (req, res, next) => {
+  console.log(req);
+  let id = 2;
+  res.render("new-res-submit");
+});
+
+app.post("/restaurant/new-submit", (req, res, next) => {
+  console.log(req);
+  let id = 2;
+  res.redirect(`/restaurant/${id}`);
 });
 
 app.get("/search", async (req, res, next) => {
