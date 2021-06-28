@@ -27,23 +27,17 @@ app.get("/restaurant/new", (req, res) => {
 
 app.post("/restaurant/new", (req, res) => {
   let restInfo = req.body;
-  //   const newRestFull = db.none(
-  //     `INSERT INTO restaurant (name, address, category) VALUES ('${restInfo.newRestName}', '${restInfo.newRestAddress}', '${restInfo.newRestCat}')`
-  //   );
-  res.redirect(`/restaurant/new-submit`, {
-    locals: { newRestFull },
-  });
+  const newRestFull = db.none(
+    `INSERT INTO restaurant (name, address, category) VALUES ('${restInfo.newRestName}', '${restInfo.newRestAddress}', '${restInfo.newRestCat}')`
+  );
+  res.redirect(`/restaurant/new-submit`);
 });
 
-app.get("/restaurant/new-submit", (req, res, next) => {
-  console.log(req);
-  let id = 2;
-  res.render("new-res-submit");
-});
-
-app.post("/restaurant/new-submit", (req, res, next) => {
-  console.log(req);
-  let id = 2;
+app.get("/restaurant/new-submit", async (req, res, next) => {
+  const newRestReady = await db.any(
+    `SELECT * FROM restaurant ORDER BY ID DESC LIMIT 1`
+  );
+  let id = parseInt(newRestReady[0].id);
   res.redirect(`/restaurant/${id}`);
 });
 
@@ -80,9 +74,9 @@ app.get("/restaurant/:id", async (req, res, next) => {
 app.post("/restaurant/:id", (req, res, next) => {
   let reviewInfo = req.body;
   let id = parseInt(req.params.id);
-  //   db.none(
-  //     `INSERT INTO review (title, review, stars, restaurant_id) VALUES ('${reviewInfo.reviewTitle}',  '${reviewInfo.review}', ${reviewInfo.reviewStars}, ${id})`
-  //   );
+  db.none(
+    `INSERT INTO review (title, review, stars, restaurant_id) VALUES ('${reviewInfo.reviewTitle}',  '${reviewInfo.review}', ${reviewInfo.reviewStars}, ${id})`
+  );
 
   res.redirect(`/restaurant/${id}`);
 });
