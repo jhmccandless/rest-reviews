@@ -27,7 +27,7 @@ app.get("/restaurant/new", (req, res) => {
 
 app.post("/restaurant/new", (req, res) => {
   let restInfo = req.body;
-  const newRestFull = db.none(
+  db.none(
     `INSERT INTO restaurant (name, address, category) VALUES ('${restInfo.newRestName}', '${restInfo.newRestAddress}', '${restInfo.newRestCat}')`
   );
   res.redirect(`/restaurant/new-submit`);
