@@ -51,6 +51,33 @@ app.get("/search", async (req, res, next) => {
   } else {
     res.redirect("/restaurant/new");
   }
+
+  /*
+  // tyring to use the next(err), not really working well
+    try {
+    const results = await db.any(
+      `SELECT * FROM restaurant WHERE name ILIKE '%${term}%'`
+    );
+    // console.log(results);
+    if (results[0]) {
+      res.render("search_results", { locals: { results } });
+    } else {
+      res.send({
+        mes: "this is a ptentnial error",
+      });
+    }
+  } catch (error) {
+    // res.send(error);
+    next(error);
+  }
+  // console.log(req.body);
+  // res.redirect("/restaurant/new");
+  // res.send("this is else statment");
+  // next(err);
+
+  // throw new Error("message for error");
+});
+*/
 });
 
 app.get("/restaurant/:id", async (req, res, next) => {
@@ -60,7 +87,7 @@ app.get("/restaurant/:id", async (req, res, next) => {
   );
   const restReviews = await db.any(
     `SELECT review.restaurant_id, review.title, review.stars, review.review, reviewer.name 
-	FROM review 
+	  FROM review 
     LEFT JOIN reviewer 
     ON reviewer.id = review.reviewer_id
     WHERE review.restaurant_id = ${id}
